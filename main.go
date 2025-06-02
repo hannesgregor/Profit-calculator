@@ -23,12 +23,19 @@ type portfolio struct {
 
 // function to add transactions to the portfolio and update the balance
 func (p *portfolio) addTransaction(t transaction) {
-	p.transactions = append(p.transactions, t)
 	if t.transaction_type == "buy" {
-		p.balance -= (t.price*float64(t.quantity) + t.fee)
+		cost := t.price*float64(t.quantity) + t.fee
+		if p.balance < cost {
+			// Not enough balance. In this case, we just skip the transaction.
+			// In a real-world scenario, we might want to handle this differently, e.g., throw an error or log it.
+			fmt.Println("Insufficient balance for transaction:", t)
+			return
+		}
+		p.balance -= cost
 	} else if t.transaction_type == "sell" {
 		p.balance += (t.price*float64(t.quantity) - t.fee)
 	}
+	p.transactions = append(p.transactions, t)
 }
 
 // function to generate a random transaction
@@ -50,7 +57,6 @@ func randomTransaction() transaction {
 
 // generate a list of random transactions (n amount)
 func generateTransactions(n int) []transaction {
-	time.Now().UnixNano()
 	transactions := make([]transaction, 0, n)
 	for i := 0; i < n; i++ {
 		transactions = append(transactions, randomTransaction())
@@ -74,12 +80,14 @@ func calculateProfitability(transactions []transaction) float64 {
 
 func main() {
 	p := portfolio{}
-	transactions := generateTransactions(1000)
+	transactions := generateTransactions(10)
 	for _, t := range transactions {
 		p.addTransaction(t)
 	}
 	fmt.Printf("Generated %d transactions\n", len(transactions))
 	fmt.Printf("Final balance: %.2f\n", p.balance)
 	fmt.Printf("Profitability: %.2f\n", calculateProfitability(transactions))
+
+	fmt.Println(transactions)
 
 }
