@@ -80,7 +80,7 @@ func calculateProfitability(transactions []transaction) float64 {
 
 func main() {
 	p := portfolio{}
-	transactions := generateTransactions(10)
+	transactions := generateTransactions(1000)
 	for _, t := range transactions {
 		p.addTransaction(t)
 	}
