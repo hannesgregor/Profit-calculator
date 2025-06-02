@@ -88,6 +88,7 @@ func main() {
 	fmt.Printf("Final balance: %.2f\n", p.balance)
 	fmt.Printf("Profitability: %.2f\n", calculateProfitability(transactions))
 
-	fmt.Println(transactions)
+	// too many (1000) transactions to print, but you can uncomment the next line to see them
+	// fmt.Println(transactions)
 
 }
