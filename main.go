@@ -34,18 +34,26 @@ func (p *portfolio) addTransaction(t transaction) {
 		p.balance -= cost
 	} else if t.transaction_type == "sell" {
 		p.balance += (t.price*float64(t.quantity) - t.fee)
+	} else if t.transaction_type == "dividend" {
+		p.balance += t.price * float64(t.quantity)
 	}
 	p.transactions = append(p.transactions, t)
 }
 
 // function to generate a random transaction
 func randomTransaction() transaction {
-	types := []string{"buy", "sell"}
+	types := []string{"buy", "sell", "dividend"}
 	t := types[rand.Intn(len(types))]
 	qty := rand.Intn(100) + 1
 	price := rand.Float64()*100 + 1
 	fee := rand.Float64()*5 + 0.1
 	ts := time.Now().Add(time.Duration(-rand.Intn(1000000)) * time.Second).Format(time.RFC3339)
+
+	if t == "dividend" {
+		price = rand.Float64()*2 + 0.1 // dividend per unit
+		fee = 0                        // usually no fee for dividends
+	}
+
 	return transaction{
 		transaction_type: t,
 		quantity:         qty,
@@ -67,15 +75,17 @@ func generateTransactions(n int) []transaction {
 // this function calculates the profitability of the portfolio based on the transactions
 // note that in this case we start with 0 balance but in a real-world scenario, we might want to start with an initial balance.
 func calculateProfitability(transactions []transaction) float64 {
-	var totalBuys, totalSells float64
+	var totalBuys, totalSells, totalDividends float64
 	for _, t := range transactions {
 		if t.transaction_type == "buy" {
 			totalBuys += t.price*float64(t.quantity) + t.fee
 		} else if t.transaction_type == "sell" {
 			totalSells += t.price*float64(t.quantity) - t.fee
+		} else if t.transaction_type == "dividend" {
+			totalDividends += t.price * float64(t.quantity)
 		}
 	}
-	return totalSells - totalBuys
+	return totalSells - totalBuys + totalDividends
 }
 
 func main() {
