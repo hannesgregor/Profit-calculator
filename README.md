@@ -1,6 +1,6 @@
 # Portfolio Profitability Calculator
 
-This Go project simulates a portfolio with buy, sell, and calculates the overall profitability, taking transaction fees into account.
+This project simulates a portfolio with buy, sell, dividends and calculates the overall profitability, taking transaction fees into account.
 
 ## Requirements
 
